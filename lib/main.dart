@@ -35,7 +35,29 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text("\$ Conversor \$"),backgroundColor: Colors.amber, centerTitle: true,)  //Colocar <\> antes dos símbolos para que sejam interpretados como símbolos.
+      appBar: AppBar(title: Text("\$ Conversor de moedas \$"),backgroundColor: Colors.amber, centerTitle: true,),  //Colocar <\> antes dos símbolos para que sejam interpretados como símbolos.
+      body: FutureBuilder<Map>( //Widget que irá conter o mapa recebido do servidor
+        future: getData(), //solicita e retorna o futuro
+        builder: (context, snapshot){ //Especificar o que será mostrado em cada um dos casos
+          switch(snapshot.connectionState){//Verifica qual o status da nossa conexão
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+              return Center(
+                child: Text("Carregando dados...", style: TextStyle(color: Colors.amber, fontSize: 25.0),
+                textAlign: TextAlign.center,)
+              );
+            default: //caso ele tenha obtido alguma coisa
+              if(snapshot.hasError){ //indicando o erro
+                return Center(
+                  child: Text("Erro ao carregar dados! :/", style: TextStyle(color: Colors.amber, fontSize: 25.0),
+                  textAlign: TextAlign.center,)
+                );
+              }
+              else{ //se não tiver erro
+                return Container(color: Colors.green);
+              }
+          }
+        }),
     );
   }
 }
